@@ -1,0 +1,26 @@
+﻿# PowerShell script to check if SCCM is installed by detecting the SCCM client service
+
+# Function to check if the SCCM client service is present
+
+function Check-SCCMClient {
+        $serviceName = "CcmExec"
+
+        try {
+                # Get the status of the SCCM client service
+                $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+
+                # Check if the service was found and is running
+                if ($service -and $service.Status -eq 'Running') {
+                        Write-Output "SCCM Client is installed and running."
+                } elseif ($service -and $service.Status -eq 'Stopped') {
+                        Write-Output "SCCM Client is installed but not running."
+                } else {
+                        Write-Output "SCCM Client is not installed on this machine."
+                }
+        } catch {
+                Write-Output "An error occurred while checking for the SCCM client service: $_"
+        }
+}
+
+# Call the function
+Check-SCCMClient
